@@ -395,9 +395,14 @@
         let currentActiveBrief = null;
         let currentAssetType = 'marketing';
 
+        function setSidebar(open) {
+            document.getElementById('sidebar').classList.toggle('open', open);
+            document.getElementById('sidebar-overlay').classList.toggle('active', open);
+        }
+
         function toggleSidebar() {
-            document.getElementById('sidebar').classList.toggle('open');
-            document.getElementById('sidebar-overlay').classList.toggle('active');
+            const isOpen = document.getElementById('sidebar').classList.contains('open');
+            setSidebar(!isOpen);
         }
 
         window.onload = () => {
@@ -406,21 +411,22 @@
         };
 
         function renderBriefs() {
+            // Note: All data here is from hardcoded briefsData (trusted), not user input
             const container = document.getElementById('briefs-container');
-            container.innerHTML = ''; 
+            const isFlagged = (brief) => brief.status.toLowerCase().includes('flagged');
 
-            briefsData.forEach(brief => {
+            container.innerHTML = briefsData.map(brief => {
                 const claimsHtml = brief.approvedClaims.map(claim => `<li>• ${claim}</li>`).join('');
                 const redLinesHtml = brief.redLinesText.map(line => `<li>• ${line}</li>`).join('');
-                
-                const statusColor = brief.id === 'AHA-10-EXF' ? 'bg-orange-100 text-orange-800' : 'bg-blue-100 text-blue-800';
-                const actionButton = brief.id === 'AHA-10-EXF' 
+                const flagged = isFlagged(brief);
+
+                const statusColor = flagged ? 'bg-orange-100 text-orange-800' : 'bg-blue-100 text-blue-800';
+                const actionButton = flagged
                     ? `<button onclick="switchTab('lifecycle')" class="bg-brand-orange text-white px-6 py-2 rounded-lg font-medium hover:bg-orange-600 transition shadow-md flex items-center gap-2"><i class="fa-solid fa-triangle-exclamation"></i> טפל בהתראה רגולטורית</button>`
                     : `<button onclick="selectBrief('${brief.id}')" class="bg-brand-dark text-white px-6 py-2 rounded-lg font-medium hover:bg-blue-900 transition shadow-md flex items-center gap-2"><i class="fa-solid fa-pen-nib"></i> צור תוכן מבריף זה</button>`;
 
-                const briefCard = `
-                    <div class="bg-white rounded-xl shadow-sm border ${brief.id === 'AHA-10-EXF' ? 'border-brand-orange' : 'border-slate-200'} overflow-hidden relative">
-                        <!-- ADDED: InfoSec / RBAC Read-Only Badge -->
+                return `
+                    <div class="bg-white rounded-xl shadow-sm border ${flagged ? 'border-brand-orange' : 'border-slate-200'} overflow-hidden relative">
                         <div class="absolute top-4 left-6 flex items-center gap-2 text-xs font-bold text-slate-400 bg-slate-100 px-3 py-1 rounded">
                             <i class="fa-solid fa-lock text-brand-dark"></i> View-Only (SSOT)
                         </div>
@@ -450,36 +456,38 @@
                         </div>
                     </div>
                 `;
-                container.innerHTML += briefCard;
-            });
+            }).join('');
         }
 
+        const TAB_IDS = ['brief', 'creator', 'pipeline', 'lifecycle'];
+        const TAB_TITLES = {
+            'brief': 'מאגר האמת הארגוני (SSOT)',
+            'creator': 'ממשק יצירה: שיווק והדרכה',
+            'pipeline': 'שער תיקוף אופרטיבי (Ops Gate)',
+            'lifecycle': 'ניהול מחזור חיי ידע (Lifecycle)'
+        };
+
         function switchTab(tabId) {
-            ['brief', 'creator', 'pipeline', 'lifecycle'].forEach(id => {
-                document.getElementById('tab-' + id).classList.add('hidden');
-                document.getElementById('nav-' + id).classList.remove('bg-white/10', 'text-white', 'border', 'border-brand-orange');
-                document.getElementById('nav-' + id).classList.add('text-slate-300');
+            TAB_IDS.forEach(id => {
+                const tab = document.getElementById('tab-' + id);
+                const nav = document.getElementById('nav-' + id);
+                tab.classList.add('hidden');
+                nav.classList.remove('bg-white/10', 'text-white', 'border', 'border-brand-orange');
+                nav.classList.add('text-slate-300');
             });
-            
+
             document.getElementById('tab-' + tabId).classList.remove('hidden');
-            
+            const activeNav = document.getElementById('nav-' + tabId);
+            activeNav.classList.remove('text-slate-300');
+
             if(tabId === 'lifecycle') {
-                document.getElementById('nav-lifecycle').classList.add('border', 'border-brand-orange', 'text-white');
-                document.getElementById('nav-lifecycle').classList.remove('text-slate-300');
+                activeNav.classList.add('border', 'border-brand-orange', 'text-white');
             } else {
-                document.getElementById('nav-' + tabId).classList.add('bg-white/10', 'text-white');
+                activeNav.classList.add('bg-white/10', 'text-white');
             }
 
-            const titles = {
-                'brief': 'מאגר האמת הארגוני (SSOT)',
-                'creator': 'ממשק יצירה: שיווק והדרכה',
-                'pipeline': 'שער תיקוף אופרטיבי (Ops Gate)',
-                'lifecycle': 'ניהול מחזור חיי ידע (Lifecycle)'
-            };
-            document.getElementById('page-title').innerText = titles[tabId];
-            // Close sidebar on mobile
-            document.getElementById('sidebar').classList.remove('open');
-            document.getElementById('sidebar-overlay').classList.remove('active');
+            document.getElementById('page-title').innerText = TAB_TITLES[tabId];
+            setSidebar(false);
         }
 
         // --- CREATOR & VALIDATION LOGIC ---
