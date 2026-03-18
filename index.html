@@ -3,6 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Skin-Tech Knowledge Hub – הדגמת מערכת SSOT לניהול ידע מוצרי, תיקוף תוכן ומחזור חיי ידע ארגוני">
     <title>Skin-Tech Knowledge Hub</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Heebo:wght@300;400;500;700;800&display=swap" rel="stylesheet">
@@ -249,7 +250,7 @@
                 <div id="lifecycle-success" class="hidden bg-white rounded-xl shadow-lg border-2 border-green-500 overflow-hidden">
                     <div class="p-8 text-center border-b border-slate-100">
                         <div class="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4 text-green-600 text-3xl">
-                            <i class="fa-solid fa-shield-check"></i>
+                            <i class="fa-solid fa-circle-check"></i>
                         </div>
                         <h3 class="font-bold text-2xl text-slate-800 mb-2">קסקדת העדכונים הופעלה בהצלחה!</h3>
                         <p class="text-slate-600 max-w-2xl mx-auto">
@@ -411,7 +412,7 @@
             document.getElementById('pipeline-task').classList.remove('hidden');
             document.getElementById('val-camp-name').innerText = document.getElementById('camp-name').value;
             document.getElementById('val-ref-id').innerText = '#' + currentActiveBrief.id;
-            document.getElementById('val-text').innerText = `"${text}"`;
+            document.getElementById('val-text').textContent = `"${text}"`;
 
             const badge = document.getElementById('val-asset-badge');
             if(currentAssetType === 'marketing') {
