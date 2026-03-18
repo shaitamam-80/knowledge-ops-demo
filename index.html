@@ -6,17 +6,31 @@
     <meta name="description" content="Skin-Tech Knowledge Hub – הדגמת מערכת SSOT לניהול ידע מוצרי, תיקוף תוכן ומחזור חיי ידע ארגוני">
     <title>Skin-Tech Knowledge Hub</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Heebo:wght@300;400;500;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Rubik:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <script>
         tailwind.config = {
             theme: {
                 extend: {
-                    fontFamily: { sans: ['Heebo', 'sans-serif'] },
+                    fontFamily: {
+                        sans: ['Rubik', 'sans-serif'],
+                        mono: ['JetBrains Mono', 'monospace']
+                    },
                     colors: {
-                        brand: {
-                            dark: '#0f2c59', light: '#f3f5f9', accent: '#00b4d8',
-                            purple: '#8b5cf6', red: '#cc6666', green: '#65a375', orange: '#f97316'
+                        surface: {
+                            base: '#0a0f1e',
+                            raised: '#111827',
+                            overlay: '#1e293b',
+                            card: 'rgba(30, 41, 59, 0.6)'
+                        },
+                        accent: {
+                            primary: '#06b6d4',
+                            glow: '#22d3ee',
+                            purple: '#a78bfa',
+                            rose: '#fb7185',
+                            amber: '#fbbf24',
+                            emerald: '#34d399'
                         }
                     }
                 }
@@ -24,25 +38,98 @@
         }
     </script>
     <style>
-        body { background-color: #f8fafc; }
-        .fade-in { animation: fadeIn 0.3s ease-in; }
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
-        input[type="radio"]:checked + div { border-color: #0f2c59; background-color: #f0f4f8; box-shadow: 0 0 0 1px #0f2c59; }
-        
+        :root {
+            --accent: #06b6d4;
+            --glow: #22d3ee;
+            --surface-base: #0a0f1e;
+            --surface-raised: #111827;
+        }
+
+        * { scrollbar-width: thin; scrollbar-color: #334155 transparent; }
+        body { background: var(--surface-base); color: #e2e8f0; }
+
+        /* Subtle grid background */
+        body::before {
+            content: ''; position: fixed; inset: 0; z-index: 0; pointer-events: none;
+            background-image:
+                radial-gradient(circle at 20% 20%, rgba(6, 182, 212, 0.03) 0%, transparent 50%),
+                radial-gradient(circle at 80% 80%, rgba(167, 139, 250, 0.03) 0%, transparent 50%),
+                linear-gradient(rgba(148, 163, 184, 0.03) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(148, 163, 184, 0.03) 1px, transparent 1px);
+            background-size: 100% 100%, 100% 100%, 32px 32px, 32px 32px;
+        }
+
+        /* Glass card */
+        .glass {
+            background: rgba(15, 23, 42, 0.7);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(148, 163, 184, 0.1);
+        }
+        .glass-light {
+            background: rgba(30, 41, 59, 0.5);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(148, 163, 184, 0.08);
+        }
+
+        /* Animations */
+        .fade-in { animation: fadeIn 0.4s cubic-bezier(0.16, 1, 0.3, 1); }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(16px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .stagger-1 { animation-delay: 0.05s; }
+        .stagger-2 { animation-delay: 0.1s; }
+        .stagger-3 { animation-delay: 0.15s; }
+        .stagger-4 { animation-delay: 0.2s; }
+        .stagger-5 { animation-delay: 0.25s; }
+        .stagger-6 { animation-delay: 0.3s; }
+        .stagger-7 { animation-delay: 0.35s; }
+
+        input[type="radio"]:checked + div {
+            border-color: var(--accent);
+            background: rgba(6, 182, 212, 0.08);
+            box-shadow: 0 0 0 1px var(--accent), 0 0 20px rgba(6, 182, 212, 0.1);
+        }
+
         .pulse-alert { animation: pulse-border 2s infinite; }
         @keyframes pulse-border {
-            0% { box-shadow: 0 0 0 0 rgba(249, 115, 22, 0.4); }
-            70% { box-shadow: 0 0 0 10px rgba(249, 115, 22, 0); }
-            100% { box-shadow: 0 0 0 0 rgba(249, 115, 22, 0); }
+            0% { box-shadow: 0 0 0 0 rgba(251, 113, 133, 0.3); }
+            70% { box-shadow: 0 0 0 12px rgba(251, 113, 133, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(251, 113, 133, 0); }
         }
+
         .sla-blink { animation: sla-pulse 1.5s infinite; }
-        @keyframes sla-pulse { 0% { opacity: 1; } 50% { opacity: 0.6; } 100% { opacity: 1; } }
+        @keyframes sla-pulse { 0% { opacity: 1; } 50% { opacity: 0.5; } 100% { opacity: 1; } }
+
+        /* Glow button effect */
+        .btn-glow {
+            position: relative;
+            transition: all 0.3s ease;
+        }
+        .btn-glow::after {
+            content: ''; position: absolute; inset: -1px; border-radius: inherit;
+            background: linear-gradient(135deg, var(--accent), #a78bfa);
+            opacity: 0; z-index: -1; filter: blur(12px);
+            transition: opacity 0.3s ease;
+        }
+        .btn-glow:hover::after { opacity: 0.4; }
+        .btn-glow:hover { transform: translateY(-1px); }
+
+        /* Nav button hover */
+        .nav-btn { transition: all 0.2s ease; position: relative; overflow: hidden; }
+        .nav-btn::before {
+            content: ''; position: absolute; right: 0; top: 0; bottom: 0; width: 3px;
+            background: var(--accent); border-radius: 0 4px 4px 0;
+            transform: scaleY(0); transition: transform 0.2s ease;
+        }
+        .nav-btn.active::before { transform: scaleY(1); }
 
         /* Mobile sidebar */
-        .sidebar-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.5); z-index: 25; }
+        .sidebar-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.6); z-index: 25; backdrop-filter: blur(4px); }
         .sidebar-overlay.active { display: block; }
         @media (max-width: 768px) {
-            #sidebar { position: fixed; right: 0; top: 0; bottom: 0; transform: translateX(100%); transition: transform 0.3s ease; z-index: 30; }
+            #sidebar { position: fixed; right: 0; top: 0; bottom: 0; transform: translateX(100%); transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1); z-index: 30; }
             #sidebar.open { transform: translateX(0); }
         }
 
@@ -51,148 +138,182 @@
         .onboard-tooltip::after {
             content: attr(data-tooltip);
             position: absolute; top: -44px; right: 50%; transform: translateX(50%);
-            background: #0f2c59; color: white; font-size: 12px; font-weight: 600;
-            padding: 6px 14px; border-radius: 8px; white-space: nowrap; z-index: 10;
+            background: linear-gradient(135deg, var(--accent), #0891b2); color: white;
+            font-size: 12px; font-weight: 600; font-family: 'Rubik', sans-serif;
+            padding: 6px 16px; border-radius: 8px; white-space: nowrap; z-index: 10;
             animation: bounce-tooltip 1.5s infinite;
+            box-shadow: 0 4px 20px rgba(6, 182, 212, 0.3);
         }
         .onboard-tooltip::before {
             content: ''; position: absolute; top: -8px; right: 50%; transform: translateX(50%);
-            border: 6px solid transparent; border-top-color: #0f2c59; z-index: 10;
+            border: 6px solid transparent; border-top-color: #0891b2; z-index: 10;
             animation: bounce-tooltip 1.5s infinite;
         }
         @keyframes bounce-tooltip {
             0%, 100% { transform: translateX(50%) translateY(0); }
             50% { transform: translateX(50%) translateY(-6px); }
         }
+
+        /* Status dot animation */
+        .status-dot { animation: status-glow 2s ease-in-out infinite; }
+        @keyframes status-glow {
+            0%, 100% { box-shadow: 0 0 4px rgba(52, 211, 153, 0.4); }
+            50% { box-shadow: 0 0 12px rgba(52, 211, 153, 0.8); }
+        }
+
+        /* Card hover */
+        .brief-card {
+            transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+        .brief-card:hover {
+            border-color: rgba(148, 163, 184, 0.2);
+            transform: translateY(-2px);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+        }
+
+        /* Textarea focus glow */
+        textarea:focus {
+            box-shadow: 0 0 0 2px rgba(6, 182, 212, 0.3), 0 0 20px rgba(6, 182, 212, 0.1);
+        }
     </style>
 </head>
-<body class="flex h-screen overflow-hidden text-slate-800">
+<body class="flex h-screen overflow-hidden">
 
     <!-- Mobile overlay -->
     <div id="sidebar-overlay" class="sidebar-overlay" onclick="toggleSidebar()"></div>
 
     <!-- Sidebar -->
-    <aside id="sidebar" class="w-64 bg-brand-dark text-white flex flex-col shadow-xl z-20 shrink-0">
-        <div class="p-6 border-b border-slate-700">
-            <h1 class="text-2xl font-extrabold tracking-tight">Skin-Tech</h1>
-            <div class="text-sm text-brand-accent mt-1 font-medium">SSOT Operations Hub</div>
+    <aside id="sidebar" class="w-64 bg-surface-raised flex flex-col z-20 shrink-0 border-l border-slate-800/80">
+        <div class="p-6 border-b border-slate-800/80">
+            <div class="flex items-center gap-3">
+                <div class="w-9 h-9 rounded-lg bg-gradient-to-br from-accent-primary to-cyan-600 flex items-center justify-center shadow-lg shadow-cyan-500/20">
+                    <i class="fa-solid fa-dna text-white text-sm"></i>
+                </div>
+                <div>
+                    <h1 class="text-lg font-bold tracking-tight text-white">Skin-Tech</h1>
+                    <div class="text-[11px] text-accent-primary font-medium tracking-wide uppercase">SSOT Operations Hub</div>
+                </div>
+            </div>
         </div>
-        
-        <nav class="flex-1 p-4 space-y-2">
-            <button onclick="switchTab('brief')" id="nav-brief" class="w-full flex items-center gap-3 px-4 py-3 bg-white/10 rounded-lg text-white font-medium transition">
-                <i class="fa-solid fa-book-medical"></i><span>מאגר בריפים (SSOT)</span>
+
+        <nav class="flex-1 p-3 space-y-1">
+            <button onclick="switchTab('brief')" id="nav-brief" class="nav-btn active w-full flex items-center gap-3 px-4 py-2.5 rounded-lg text-white font-medium bg-white/5">
+                <i class="fa-solid fa-book-medical text-accent-primary text-sm"></i><span class="text-sm">מאגר בריפים (SSOT)</span>
             </button>
-            <button onclick="switchTab('creator')" id="nav-creator" class="w-full flex items-center gap-3 px-4 py-3 hover:bg-white/5 rounded-lg text-slate-300 font-medium transition pointer-events-none opacity-50">
-                <i class="fa-solid fa-pen-nib"></i><span>יצירת תוכן (Creators)</span>
+            <button onclick="switchTab('creator')" id="nav-creator" class="nav-btn w-full flex items-center gap-3 px-4 py-2.5 rounded-lg text-slate-400 font-medium hover:bg-white/5 pointer-events-none opacity-40">
+                <i class="fa-solid fa-pen-nib text-sm"></i><span class="text-sm">יצירת תוכן (Creators)</span>
             </button>
-            <button onclick="switchTab('pipeline')" id="nav-pipeline" class="w-full flex items-center gap-3 px-4 py-3 hover:bg-white/5 rounded-lg text-slate-300 font-medium transition pointer-events-none opacity-50 relative">
-                <i class="fa-solid fa-shield-halved"></i><span>שער תיקוף אופרטיבי</span>
-                <span id="pipeline-badge" class="absolute left-4 bg-brand-accent text-white text-xs font-bold px-2 py-0.5 rounded-full hidden">1</span>
+            <button onclick="switchTab('pipeline')" id="nav-pipeline" class="nav-btn w-full flex items-center gap-3 px-4 py-2.5 rounded-lg text-slate-400 font-medium hover:bg-white/5 pointer-events-none opacity-40 relative">
+                <i class="fa-solid fa-shield-halved text-sm"></i><span class="text-sm">שער תיקוף אופרטיבי</span>
+                <span id="pipeline-badge" class="absolute left-3 bg-accent-primary text-surface-base text-[10px] font-bold w-5 h-5 rounded-full hidden flex items-center justify-center">1</span>
             </button>
-            <button onclick="switchTab('lifecycle')" id="nav-lifecycle" class="w-full flex items-center gap-3 px-4 py-3 hover:bg-white/5 rounded-lg text-slate-300 font-medium transition relative mt-6 border border-slate-700 bg-slate-800/50">
-                <i class="fa-solid fa-clock-rotate-left text-brand-orange"></i><span>בקרת מחזור חיים</span>
-                <span class="absolute left-4 bg-brand-orange text-white text-xs font-bold px-2 py-0.5 rounded-full">!</span>
-            </button>
+
+            <div class="pt-4 mt-4 border-t border-slate-800/60">
+                <button onclick="switchTab('lifecycle')" id="nav-lifecycle" class="nav-btn w-full flex items-center gap-3 px-4 py-2.5 rounded-lg text-slate-400 font-medium hover:bg-white/5 relative border border-accent-rose/30 bg-accent-rose/5">
+                    <i class="fa-solid fa-clock-rotate-left text-accent-rose text-sm"></i><span class="text-sm">בקרת מחזור חיים</span>
+                    <span class="absolute left-3 bg-accent-rose text-white text-[10px] font-bold w-5 h-5 rounded-full flex items-center justify-center">!</span>
+                </button>
+            </div>
         </nav>
 
-        <div class="p-4 border-t border-slate-700 text-xs text-slate-400 leading-relaxed">
-            <span class="text-brand-accent font-medium"><i class="fa-solid fa-lock text-[10px] mr-1"></i> RBAC Enforced</span><br>
+        <div class="p-4 border-t border-slate-800/80 text-[11px] text-slate-500 leading-relaxed">
+            <div class="flex items-center gap-1.5 text-accent-primary font-medium mb-1">
+                <i class="fa-solid fa-lock text-[9px]"></i> RBAC Enforced
+            </div>
             גרסת הדגמה ל-MVP (תקן SOP v5.0)<br>
             כולל SLA ו-Audit Trails.
         </div>
     </aside>
 
     <!-- Main Content -->
-    <main class="flex-1 flex flex-col bg-slate-50 relative overflow-y-auto">
-        
-        <header class="bg-white px-4 md:px-8 py-5 shadow-sm border-b border-slate-200 flex justify-between items-center z-10 sticky top-0">
+    <main class="flex-1 flex flex-col relative overflow-y-auto z-10">
+
+        <header class="glass px-4 md:px-8 py-4 flex justify-between items-center z-10 sticky top-0">
             <div class="flex items-center gap-3">
-                <button id="hamburger" onclick="toggleSidebar()" class="md:hidden text-slate-600 hover:text-brand-dark text-xl p-1">
+                <button id="hamburger" onclick="toggleSidebar()" class="md:hidden text-slate-400 hover:text-accent-primary text-lg p-1 transition">
                     <i class="fa-solid fa-bars"></i>
                 </button>
-                <h2 id="page-title" class="text-lg md:text-xl font-bold text-slate-800">מאגר האמת הארגוני (SSOT)</h2>
+                <h2 id="page-title" class="text-base md:text-lg font-semibold text-white">מאגר האמת הארגוני (SSOT)</h2>
             </div>
             <div class="flex items-center gap-4">
-                <div class="text-xs font-mono bg-green-50 text-green-700 border border-green-200 px-3 py-1.5 rounded-full flex items-center gap-2">
-                    <div class="w-2 h-2 rounded-full bg-green-500"></div> System Live
+                <div class="text-[11px] font-mono bg-accent-emerald/10 text-accent-emerald border border-accent-emerald/20 px-3 py-1.5 rounded-full flex items-center gap-2">
+                    <div class="w-1.5 h-1.5 rounded-full bg-accent-emerald status-dot"></div> System Live
                 </div>
-                <div class="flex items-center gap-3 pl-4 border-r border-slate-200">
-                    <div class="w-8 h-8 rounded-full bg-brand-dark text-white flex items-center justify-center text-xs">
+                <div class="flex items-center gap-2.5 pl-4 border-r border-slate-700/50">
+                    <div class="w-7 h-7 rounded-full bg-gradient-to-br from-slate-600 to-slate-700 text-white flex items-center justify-center text-[10px] ring-2 ring-slate-600/50">
                         <i class="fa-solid fa-user-shield"></i>
                     </div>
-                    <div class="text-sm font-bold text-brand-dark">Ops Admin</div>
+                    <div class="text-xs font-semibold text-slate-300">Ops Admin</div>
                 </div>
             </div>
         </header>
 
         <div class="p-4 md:p-8 flex-1 max-w-6xl mx-auto w-full">
-            
+
             <!-- TAB 1: KNOWLEDGE BRIEFS LIST -->
             <div id="tab-brief" class="fade-in">
-                <!-- Content injected via JS -->
-                <div id="briefs-container" class="space-y-6 pb-10"></div>
+                <div id="briefs-container" class="space-y-5 pb-10"></div>
             </div>
 
             <!-- TAB 2: CREATOR -->
-            <div id="tab-creator" class="hidden fade-in space-y-6">
-                <!-- Keep existing creator logic -->
+            <div id="tab-creator" class="hidden fade-in space-y-5">
                 <div class="flex justify-between items-center mb-2">
-                    <button onclick="switchTab('brief')" class="text-slate-500 hover:text-brand-dark font-medium transition flex items-center gap-2">
+                    <button onclick="switchTab('brief')" class="text-slate-400 hover:text-accent-primary font-medium transition flex items-center gap-2 text-sm">
                         <i class="fa-solid fa-arrow-right"></i> חזרה למאגר
                     </button>
                 </div>
 
-                <div class="bg-white rounded-xl shadow-sm border border-slate-200 p-6">
+                <div class="glass rounded-2xl p-6">
                     <div class="flex justify-between items-start mb-6">
                         <div>
-                            <h3 class="font-bold text-xl mb-1">יצירת נכס חדש מתוך SSOT</h3>
-                            <p class="text-slate-500 text-sm">מבוסס על בריף: <span id="active-brief-id" class="font-mono text-brand-dark font-bold"></span> (<span id="active-brief-title"></span>)</p>
+                            <h3 class="font-bold text-lg mb-1 text-white">יצירת נכס חדש מתוך SSOT</h3>
+                            <p class="text-slate-400 text-sm">מבוסס על בריף: <span id="active-brief-id" class="font-mono text-accent-primary font-semibold"></span> (<span id="active-brief-title" class="text-slate-300"></span>)</p>
                         </div>
                     </div>
-                    
-                    <div class="space-y-6">
+
+                    <div class="space-y-5">
                         <div>
-                            <label class="block text-sm font-bold text-slate-700 mb-2">יעד התוצר (פיצול נתיבים)</label>
-                            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                            <label class="block text-xs font-semibold text-slate-400 mb-2 uppercase tracking-wide">יעד התוצר (פיצול נתיבים)</label>
+                            <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
                                 <label class="cursor-pointer">
                                     <input type="radio" name="asset_type" value="marketing" class="peer sr-only" checked onchange="updateCreatorUI()">
-                                    <div class="border border-slate-200 rounded-lg p-4 transition peer-checked:border-brand-dark peer-checked:bg-slate-50 peer-checked:ring-1 peer-checked:ring-brand-dark hover:bg-slate-50">
-                                        <div class="flex items-center gap-3 mb-1"><i class="fa-solid fa-bullhorn text-brand-accent text-xl"></i><span class="font-bold text-slate-800">קמפיין שיווקי (B2C)</span></div>
+                                    <div class="border border-slate-700/60 rounded-xl p-4 transition hover:bg-white/5 bg-transparent">
+                                        <div class="flex items-center gap-3"><i class="fa-solid fa-bullhorn text-accent-primary text-lg"></i><span class="font-semibold text-slate-200 text-sm">קמפיין שיווקי (B2C)</span></div>
                                     </div>
                                 </label>
                                 <label class="cursor-pointer">
                                     <input type="radio" name="asset_type" value="training" class="peer sr-only" onchange="updateCreatorUI()">
-                                    <div class="border border-slate-200 rounded-lg p-4 transition peer-checked:border-brand-dark peer-checked:bg-slate-50 peer-checked:ring-1 peer-checked:ring-brand-dark hover:bg-slate-50">
-                                        <div class="flex items-center gap-3 mb-1"><i class="fa-solid fa-person-chalkboard text-brand-purple text-xl"></i><span class="font-bold text-slate-800">חומר הדרכה (B2B)</span></div>
+                                    <div class="border border-slate-700/60 rounded-xl p-4 transition hover:bg-white/5 bg-transparent">
+                                        <div class="flex items-center gap-3"><i class="fa-solid fa-person-chalkboard text-accent-purple text-lg"></i><span class="font-semibold text-slate-200 text-sm">חומר הדרכה (B2B)</span></div>
                                     </div>
                                 </label>
                             </div>
                         </div>
 
                         <div>
-                            <label id="label-camp-name" class="block text-sm font-bold text-slate-700 mb-2">שם התוצר</label>
-                            <input type="text" id="camp-name" class="w-full border border-slate-300 rounded-lg px-4 py-2 bg-slate-50 text-slate-700 focus:outline-none" readonly>
+                            <label id="label-camp-name" class="block text-xs font-semibold text-slate-400 mb-2 uppercase tracking-wide">שם התוצר</label>
+                            <input type="text" id="camp-name" class="w-full border border-slate-700/60 rounded-xl px-4 py-2.5 bg-surface-base/50 text-slate-300 focus:outline-none text-sm" readonly>
                         </div>
-                        
+
                         <div>
-                            <label id="label-camp-text" class="block text-sm font-bold text-slate-700 mb-2">תוכן / קופירייטינג</label>
-                            <div class="bg-blue-50 text-blue-800 text-sm p-3 rounded-lg mb-3 flex gap-2 items-start border border-blue-100">
-                                <i class="fa-solid fa-circle-info mt-0.5 text-brand-accent"></i>
-                                <span><strong class="text-brand-dark">טיפ להדגמה:</strong> <span id="active-demo-tip"></span></span>
+                            <label id="label-camp-text" class="block text-xs font-semibold text-slate-400 mb-2 uppercase tracking-wide">תוכן / קופירייטינג</label>
+                            <div class="bg-accent-primary/5 text-accent-primary text-sm p-3 rounded-xl mb-3 flex gap-2 items-start border border-accent-primary/10">
+                                <i class="fa-solid fa-circle-info mt-0.5 text-xs"></i>
+                                <span class="text-slate-300"><strong class="text-accent-primary">טיפ להדגמה:</strong> <span id="active-demo-tip"></span></span>
                             </div>
                             <div class="flex gap-2 mb-3">
-                                <button onclick="fillSample('pass')" class="text-xs bg-green-100 text-green-800 border border-green-200 px-3 py-1.5 rounded-lg font-bold hover:bg-green-200 transition flex items-center gap-1.5">
+                                <button onclick="fillSample('pass')" class="text-xs bg-accent-emerald/10 text-accent-emerald border border-accent-emerald/20 px-3 py-1.5 rounded-lg font-semibold hover:bg-accent-emerald/20 transition flex items-center gap-1.5">
                                     <i class="fa-solid fa-check"></i> טען ניסוח תקין לדוגמה
                                 </button>
-                                <button onclick="fillSample('fail')" class="text-xs bg-red-100 text-red-800 border border-red-200 px-3 py-1.5 rounded-lg font-bold hover:bg-red-200 transition flex items-center gap-1.5">
+                                <button onclick="fillSample('fail')" class="text-xs bg-accent-rose/10 text-accent-rose border border-accent-rose/20 px-3 py-1.5 rounded-lg font-semibold hover:bg-accent-rose/20 transition flex items-center gap-1.5">
                                     <i class="fa-solid fa-xmark"></i> טען ניסוח פוגעני לדוגמה
                                 </button>
                             </div>
-                            <textarea id="camp-text" rows="5" class="w-full border border-slate-300 rounded-lg px-4 py-3 focus:ring-2 focus:ring-brand-accent focus:border-transparent outline-none resize-none"></textarea>
+                            <textarea id="camp-text" rows="5" class="w-full border border-slate-700/60 rounded-xl px-4 py-3 bg-surface-base/50 text-slate-200 focus:border-accent-primary/50 outline-none resize-none text-sm transition"></textarea>
                         </div>
 
                         <div class="flex justify-end pt-2">
-                            <button onclick="submitToValidation()" class="bg-brand-accent text-white px-8 py-3 rounded-lg font-bold hover:bg-blue-500 transition shadow-lg flex items-center gap-2">
+                            <button onclick="submitToValidation()" class="btn-glow bg-gradient-to-l from-accent-primary to-cyan-600 text-white px-7 py-2.5 rounded-xl font-semibold text-sm shadow-lg shadow-cyan-500/20 flex items-center gap-2">
                                 <i class="fa-solid fa-paper-plane"></i> שלח לתיקוף (נמדד ב-SLA)
                             </button>
                         </div>
@@ -201,88 +322,85 @@
             </div>
 
             <!-- TAB 3: PIPELINE (WITH SLA) -->
-            <div id="tab-pipeline" class="hidden fade-in space-y-6">
+            <div id="tab-pipeline" class="hidden fade-in space-y-5">
                 <div id="pipeline-empty" class="text-center py-20">
-                    <div class="w-20 h-20 bg-slate-100 rounded-full flex items-center justify-center mx-auto mb-4 text-slate-400 text-3xl"><i class="fa-solid fa-inbox"></i></div>
-                    <h3 class="font-bold text-xl text-slate-600">אין משימות ממתינות לתיקוף</h3>
+                    <div class="w-16 h-16 glass-light rounded-2xl flex items-center justify-center mx-auto mb-4 text-slate-500 text-2xl"><i class="fa-solid fa-inbox"></i></div>
+                    <h3 class="font-semibold text-lg text-slate-500">אין משימות ממתינות לתיקוף</h3>
                 </div>
-                
-                <div id="pipeline-task" class="hidden bg-white rounded-xl shadow-lg border border-slate-200 overflow-hidden">
-                    <div class="bg-slate-800 text-white px-6 py-4 flex justify-between items-center">
-                        <div class="flex items-center gap-3"><i class="fa-solid fa-magnifying-glass-chart text-brand-accent"></i><h3 class="font-bold">בקשה לתיקוף: <span id="val-camp-name"></span></h3></div>
-                        
-                        <!-- ADDED: SLA Timer -->
+
+                <div id="pipeline-task" class="hidden glass rounded-2xl overflow-hidden">
+                    <div class="bg-surface-raised/80 border-b border-slate-800/60 text-white px-6 py-4 flex justify-between items-center">
+                        <div class="flex items-center gap-3"><i class="fa-solid fa-magnifying-glass-chart text-accent-primary text-sm"></i><h3 class="font-semibold text-sm">בקשה לתיקוף: <span id="val-camp-name"></span></h3></div>
                         <div class="flex items-center gap-3">
-                            <div class="bg-amber-500/20 text-amber-300 text-xs font-mono font-bold px-3 py-1.5 rounded flex items-center gap-2 border border-amber-500/30 sla-blink">
+                            <div class="bg-accent-amber/10 text-accent-amber text-[11px] font-mono font-semibold px-3 py-1.5 rounded-lg flex items-center gap-2 border border-accent-amber/20 sla-blink">
                                 <i class="fa-solid fa-stopwatch"></i> Ops SLA: 07h 59m
                             </div>
                             <span id="val-asset-badge"></span>
                         </div>
                     </div>
-                    
+
                     <div class="p-6">
                         <div class="flex justify-between items-end mb-2">
-                            <h4 class="text-sm font-bold text-slate-500">התוכן לבדיקה:</h4>
-                            <span class="text-xs bg-slate-100 text-slate-500 px-2 py-1 rounded font-mono">Reference: <span id="val-ref-id"></span></span>
+                            <h4 class="text-xs font-semibold text-slate-500 uppercase tracking-wide">התוכן לבדיקה:</h4>
+                            <span class="text-[11px] bg-surface-overlay/50 text-slate-400 px-2 py-1 rounded font-mono border border-slate-700/40">Reference: <span id="val-ref-id"></span></span>
                         </div>
-                        <div id="val-text" class="bg-slate-50 border border-slate-200 p-4 rounded-lg text-slate-800 mb-6 text-lg italic"></div>
-                        <div id="validation-system" class="rounded-lg p-5 mb-6 border"></div>
-                        <div id="action-buttons" class="flex justify-end gap-3 border-t border-slate-100 pt-6"></div>
+                        <div id="val-text" class="glass-light p-4 rounded-xl text-slate-200 mb-6 text-sm italic"></div>
+                        <div id="validation-system" class="rounded-xl p-5 mb-6 border"></div>
+                        <div id="action-buttons" class="flex justify-end gap-3 border-t border-slate-800/40 pt-5"></div>
                     </div>
                 </div>
             </div>
 
             <!-- TAB 4: LIFECYCLE MANAGEMENT -->
-            <div id="tab-lifecycle" class="hidden fade-in space-y-6">
-                <!-- Keep existing lifecycle logic but add Audit Trail -->
-                <div class="mb-6">
-                    <h3 class="text-lg font-bold text-slate-700">ניהול סיכונים ומחזור חיי ידע (Lifecycle)</h3>
-                    <p class="text-slate-500 text-sm">מרכז התראות רגולטוריות וקסקדות עדכון לתוצרים חיים באוויר.</p>
+            <div id="tab-lifecycle" class="hidden fade-in space-y-5">
+                <div class="mb-5">
+                    <h3 class="text-lg font-semibold text-white">ניהול סיכונים ומחזור חיי ידע (Lifecycle)</h3>
+                    <p class="text-slate-400 text-sm">מרכז התראות רגולטוריות וקסקדות עדכון לתוצרים חיים באוויר.</p>
                 </div>
 
-                <div id="lifecycle-alert" class="bg-white rounded-xl shadow-lg border-2 border-brand-orange overflow-hidden pulse-alert">
-                    <div class="bg-orange-50 px-6 py-4 border-b border-orange-100 flex justify-between items-start">
+                <div id="lifecycle-alert" class="glass rounded-2xl overflow-hidden border-accent-rose/30 pulse-alert" style="border-width:1px;">
+                    <div class="bg-accent-rose/5 px-6 py-4 border-b border-accent-rose/10 flex justify-between items-start">
                         <div class="flex gap-4">
-                            <div class="mt-1 text-brand-orange text-3xl"><i class="fa-solid fa-triangle-exclamation"></i></div>
+                            <div class="mt-1 text-accent-rose text-2xl"><i class="fa-solid fa-triangle-exclamation"></i></div>
                             <div>
-                                <h3 class="font-bold text-xl text-orange-900">התראת רגולציה קריטית (SME Triggered)</h3>
-                                <p class="text-orange-800 font-medium">עדכון הנחיות EU הנוגע לבריף: <span class="font-mono font-bold bg-white px-1 rounded shadow-sm border border-orange-200">#AHA-10-EXF</span></p>
+                                <h3 class="font-bold text-lg text-white">התראת רגולציה קריטית (SME Triggered)</h3>
+                                <p class="text-slate-300 font-medium text-sm">עדכון הנחיות EU הנוגע לבריף: <span class="font-mono font-semibold bg-surface-base/50 px-1.5 rounded border border-slate-700/40 text-accent-rose">#AHA-10-EXF</span></p>
                             </div>
                         </div>
-                        <span class="bg-red-600 text-white text-xs font-bold px-3 py-1 rounded-full shadow-md">Critical Revocation</span>
+                        <span class="bg-accent-rose text-white text-[10px] font-bold px-3 py-1 rounded-full shadow-lg shadow-rose-500/20 uppercase tracking-wider">Critical Revocation</span>
                     </div>
-                    
+
                     <div class="p-6">
-                        <p class="text-slate-700 mb-6 bg-slate-50 p-4 rounded-lg border border-slate-200">
-                            <strong>הנחיית המדען הראשי (SME):</strong><br>
+                        <p class="text-slate-300 mb-6 glass-light p-4 rounded-xl text-sm leading-relaxed">
+                            <strong class="text-white">הנחיית המדען הראשי (SME):</strong><br>
                             הרגולציה האירופית החדשה אוסרת על שימוש בחומצות AHA בריכוז 10% לשימוש ביתי ללא מרשם, ומגבילה את הריכוז ל-8% בלבד. יש לעדכן באופן מיידי.
                         </p>
-                        <!-- Impact Analysis -->
-                        <div class="border-t border-slate-100 pt-6">
+
+                        <div class="border-t border-slate-800/40 pt-6">
                             <div class="flex justify-between items-center mb-4">
-                                <h4 class="font-bold text-slate-800 flex items-center gap-2">
-                                    <i class="fa-solid fa-network-wired text-brand-dark"></i> ניתוח השפעה על נכסים (Metadata Trace)
+                                <h4 class="font-semibold text-white flex items-center gap-2 text-sm">
+                                    <i class="fa-solid fa-network-wired text-accent-primary"></i> ניתוח השפעה על נכסים (Metadata Trace)
                                 </h4>
                             </div>
                             <div class="space-y-3">
-                                <div class="flex items-center justify-between bg-white border border-slate-200 p-4 rounded-lg shadow-sm">
+                                <div class="flex items-center justify-between glass-light p-4 rounded-xl">
                                     <div class="flex items-center gap-4">
-                                        <div class="w-10 h-10 rounded bg-blue-50 flex items-center justify-center text-brand-accent"><i class="fa-solid fa-bullhorn text-xl"></i></div>
-                                        <div><div class="font-bold text-slate-800">קמפיין סושיאל מתמשך - השקת AHA</div><div class="text-xs text-slate-500 font-mono mt-0.5">ID: CMP-7732-B</div></div>
+                                        <div class="w-9 h-9 rounded-lg bg-accent-primary/10 flex items-center justify-center text-accent-primary"><i class="fa-solid fa-bullhorn text-sm"></i></div>
+                                        <div><div class="font-semibold text-white text-sm">קמפיין סושיאל מתמשך - השקת AHA</div><div class="text-[11px] text-slate-500 font-mono mt-0.5">ID: CMP-7732-B</div></div>
                                     </div>
-                                    <span class="bg-green-100 text-green-800 text-xs font-bold px-2 py-1 rounded">Live (Google Ads)</span>
+                                    <span class="bg-accent-emerald/10 text-accent-emerald text-[10px] font-semibold px-2.5 py-1 rounded-lg border border-accent-emerald/20">Live (Google Ads)</span>
                                 </div>
-                                <div class="flex items-center justify-between bg-white border border-slate-200 p-4 rounded-lg shadow-sm">
+                                <div class="flex items-center justify-between glass-light p-4 rounded-xl">
                                     <div class="flex items-center gap-4">
-                                        <div class="w-10 h-10 rounded bg-purple-50 flex items-center justify-center text-brand-purple"><i class="fa-solid fa-person-chalkboard text-xl"></i></div>
-                                        <div><div class="font-bold text-slate-800">פרוטוקול קליניקה לצוות קוסמטיקאיות</div><div class="text-xs text-slate-500 font-mono mt-0.5">ID: TRN-2219-A</div></div>
+                                        <div class="w-9 h-9 rounded-lg bg-accent-purple/10 flex items-center justify-center text-accent-purple"><i class="fa-solid fa-person-chalkboard text-sm"></i></div>
+                                        <div><div class="font-semibold text-white text-sm">פרוטוקול קליניקה לצוות קוסמטיקאיות</div><div class="text-[11px] text-slate-500 font-mono mt-0.5">ID: TRN-2219-A</div></div>
                                     </div>
-                                    <span class="bg-green-100 text-green-800 text-xs font-bold px-2 py-1 rounded">Live (Internal Portal)</span>
+                                    <span class="bg-accent-emerald/10 text-accent-emerald text-[10px] font-semibold px-2.5 py-1 rounded-lg border border-accent-emerald/20">Live (Internal Portal)</span>
                                 </div>
                             </div>
                         </div>
-                        <div id="cascade-actions" class="mt-8 flex justify-end gap-3 border-t border-slate-100 pt-6">
-                            <button onclick="triggerCascade()" class="bg-brand-orange text-white px-6 py-3 rounded-lg font-bold hover:bg-orange-600 transition flex items-center gap-2 shadow-lg">
+                        <div id="cascade-actions" class="mt-8 flex justify-end gap-3 border-t border-slate-800/40 pt-5">
+                            <button onclick="triggerCascade()" class="btn-glow bg-gradient-to-l from-accent-rose to-rose-600 text-white px-6 py-2.5 rounded-xl font-semibold text-sm flex items-center gap-2 shadow-lg shadow-rose-500/20">
                                 <i class="fa-solid fa-code-branch"></i> הקפא נכסים והפעל קסקדת עדכון כירורגית (v2.0)
                             </button>
                         </div>
@@ -290,28 +408,26 @@
                 </div>
 
                 <!-- Success State with Audit Trail -->
-                <div id="lifecycle-success" class="hidden bg-white rounded-xl shadow-lg border-2 border-green-500 overflow-hidden">
-                    <div class="p-8 text-center border-b border-slate-100">
-                        <div class="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4 text-green-600 text-3xl">
+                <div id="lifecycle-success" class="hidden glass rounded-2xl overflow-hidden" style="border-color: rgba(52, 211, 153, 0.3);">
+                    <div class="p-8 text-center border-b border-slate-800/40">
+                        <div class="w-14 h-14 bg-accent-emerald/10 rounded-2xl flex items-center justify-center mx-auto mb-4 text-accent-emerald text-2xl ring-4 ring-accent-emerald/10">
                             <i class="fa-solid fa-circle-check"></i>
                         </div>
-                        <h3 class="font-bold text-2xl text-slate-800 mb-2">קסקדת העדכונים הופעלה בהצלחה!</h3>
-                        <p class="text-slate-600 max-w-2xl mx-auto">
+                        <h3 class="font-bold text-xl text-white mb-2">קסקדת העדכונים הופעלה בהצלחה!</h3>
+                        <p class="text-slate-400 max-w-2xl mx-auto text-sm">
                             הנכסים המקושרים הוקפאו אוטומטית, ונשלחו משימות עדכון כירורגיות למחלקות ליצירת גרסת v2.0 (8%).
                         </p>
                     </div>
-                    
-                    <!-- ADDED: Audit Trail -->
-                    <div class="bg-slate-50 p-6 text-right">
-                        <h4 class="text-xs font-bold text-slate-500 mb-3 tracking-wide uppercase">Audit Trail (שרשרת ביקורת משפטית)</h4>
-                        <ul class="text-sm font-mono text-slate-600 space-y-2">
-                            <li><span class="text-slate-400">[11:04:12]</span> <span class="text-blue-600">SYSTEM:</span> Alert received from SME Portal.</li>
-                            <li><span class="text-slate-400">[11:04:15]</span> <span class="text-blue-600">METADATA:</span> Locked tags [CMP-7732-B], [TRN-2219-A].</li>
-                            <li><span class="text-slate-400">[11:04:18]</span> <span class="text-green-600">ACTION:</span> Cascade sequence initiated by Ops Admin. Brief #AHA-10-EXF archived as v1.0.</li>
+
+                    <div class="bg-surface-base/30 p-6 text-right">
+                        <h4 class="text-[10px] font-semibold text-slate-500 mb-3 tracking-widest uppercase">Audit Trail (שרשרת ביקורת משפטית)</h4>
+                        <ul class="text-xs font-mono text-slate-400 space-y-2">
+                            <li><span class="text-slate-600">[11:04:12]</span> <span class="text-accent-primary">SYSTEM:</span> Alert received from SME Portal.</li>
+                            <li><span class="text-slate-600">[11:04:15]</span> <span class="text-accent-primary">METADATA:</span> Locked tags [CMP-7732-B], [TRN-2219-A].</li>
+                            <li><span class="text-slate-600">[11:04:18]</span> <span class="text-accent-emerald">ACTION:</span> Cascade sequence initiated by Ops Admin. Brief #AHA-10-EXF archived as v1.0.</li>
                         </ul>
                     </div>
                 </div>
-
             </div>
 
         </div>
@@ -415,43 +531,45 @@
             const container = document.getElementById('briefs-container');
             const isFlagged = (brief) => brief.status.toLowerCase().includes('flagged');
 
-            container.innerHTML = briefsData.map(brief => {
-                const claimsHtml = brief.approvedClaims.map(claim => `<li>• ${claim}</li>`).join('');
-                const redLinesHtml = brief.redLinesText.map(line => `<li>• ${line}</li>`).join('');
+            container.innerHTML = briefsData.map((brief, i) => {
+                const claimsHtml = brief.approvedClaims.map(claim => `<li class="flex gap-2 items-start"><span class="text-accent-emerald mt-0.5">&#x25CF;</span> ${claim}</li>`).join('');
+                const redLinesHtml = brief.redLinesText.map(line => `<li class="flex gap-2 items-start"><span class="text-accent-rose mt-0.5">&#x25CF;</span> ${line}</li>`).join('');
                 const flagged = isFlagged(brief);
 
-                const statusColor = flagged ? 'bg-orange-100 text-orange-800' : 'bg-blue-100 text-blue-800';
+                const statusColor = flagged
+                    ? 'bg-accent-rose/10 text-accent-rose border border-accent-rose/20'
+                    : 'bg-accent-primary/10 text-accent-primary border border-accent-primary/20';
                 const actionButton = flagged
-                    ? `<button onclick="switchTab('lifecycle')" class="bg-brand-orange text-white px-6 py-2 rounded-lg font-medium hover:bg-orange-600 transition shadow-md flex items-center gap-2"><i class="fa-solid fa-triangle-exclamation"></i> טפל בהתראה רגולטורית</button>`
-                    : `<button onclick="selectBrief('${brief.id}')" class="bg-brand-dark text-white px-6 py-2 rounded-lg font-medium hover:bg-blue-900 transition shadow-md flex items-center gap-2"><i class="fa-solid fa-pen-nib"></i> צור תוכן מבריף זה</button>`;
+                    ? `<button onclick="switchTab('lifecycle')" class="btn-glow bg-gradient-to-l from-accent-rose to-rose-600 text-white px-5 py-2 rounded-xl font-semibold text-xs flex items-center gap-2 shadow-lg shadow-rose-500/20"><i class="fa-solid fa-triangle-exclamation"></i> טפל בהתראה רגולטורית</button>`
+                    : `<button onclick="selectBrief('${brief.id}')" class="btn-glow bg-gradient-to-l from-accent-primary to-cyan-600 text-white px-5 py-2 rounded-xl font-semibold text-xs flex items-center gap-2 shadow-lg shadow-cyan-500/20"><i class="fa-solid fa-pen-nib"></i> צור תוכן מבריף זה</button>`;
 
                 return `
-                    <div class="bg-white rounded-xl shadow-sm border ${flagged ? 'border-brand-orange' : 'border-slate-200'} overflow-hidden relative">
-                        <div class="absolute top-4 left-6 flex items-center gap-2 text-xs font-bold text-slate-400 bg-slate-100 px-3 py-1 rounded">
-                            <i class="fa-solid fa-lock text-brand-dark"></i> View-Only (SSOT)
+                    <div class="brief-card glass rounded-2xl overflow-hidden fade-in stagger-${i + 1}" style="opacity:0;animation-fill-mode:forwards;">
+                        <div class="absolute top-4 left-5 flex items-center gap-1.5 text-[10px] font-semibold text-slate-500 bg-surface-base/60 px-2.5 py-1 rounded-lg border border-slate-700/30 backdrop-blur-sm">
+                            <i class="fa-solid fa-lock text-[8px] text-slate-600"></i> View-Only (SSOT)
                         </div>
 
-                        <div class="bg-slate-50 px-6 py-4 border-b border-slate-200 flex justify-between items-center">
-                            <div class="flex items-center gap-3 mt-1">
-                                <span class="${statusColor} text-xs font-bold px-2.5 py-1 rounded shadow-sm">${brief.status}</span>
-                                <h3 class="font-bold text-lg text-brand-dark">${brief.title}</h3>
+                        <div class="bg-surface-raised/40 px-6 py-4 border-b border-slate-800/40 flex justify-between items-center relative">
+                            <div class="flex items-center gap-3">
+                                <span class="${statusColor} text-[10px] font-semibold px-2.5 py-1 rounded-lg">${brief.status}</span>
+                                <h3 class="font-semibold text-base text-white">${brief.title}</h3>
                             </div>
                         </div>
                         <div class="p-6">
-                            <p class="text-slate-600 mb-6 border-r-4 border-slate-300 pr-4 leading-relaxed"><strong>הקשר קליני:</strong> ${brief.context}</p>
-                            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                                <div class="bg-green-50 rounded-lg p-5 border border-green-100">
-                                    <h4 class="font-bold text-green-800 flex items-center gap-2 mb-3"><i class="fa-solid fa-check-circle"></i> טענות מאושרות (Claims)</h4>
-                                    <ul class="space-y-2 text-sm text-green-900">${claimsHtml}</ul>
+                            <p class="text-slate-400 mb-5 border-r-2 border-accent-primary/30 pr-4 leading-relaxed text-sm"><strong class="text-slate-200">הקשר קליני:</strong> ${brief.context}</p>
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                <div class="bg-accent-emerald/5 rounded-xl p-4 border border-accent-emerald/10">
+                                    <h4 class="font-semibold text-accent-emerald flex items-center gap-2 mb-3 text-xs uppercase tracking-wide"><i class="fa-solid fa-check-circle"></i> טענות מאושרות</h4>
+                                    <ul class="space-y-2 text-sm text-slate-300">${claimsHtml}</ul>
                                 </div>
-                                <div class="bg-red-50 rounded-lg p-5 border border-red-100">
-                                    <h4 class="font-bold text-red-800 flex items-center gap-2 mb-3"><i class="fa-solid fa-ban"></i> קווים אדומים (Red Lines)</h4>
-                                    <ul class="space-y-2 text-sm text-red-900 font-medium">${redLinesHtml}</ul>
+                                <div class="bg-accent-rose/5 rounded-xl p-4 border border-accent-rose/10">
+                                    <h4 class="font-semibold text-accent-rose flex items-center gap-2 mb-3 text-xs uppercase tracking-wide"><i class="fa-solid fa-ban"></i> קווים אדומים</h4>
+                                    <ul class="space-y-2 text-sm text-slate-300">${redLinesHtml}</ul>
                                 </div>
                             </div>
                         </div>
-                        <div class="bg-slate-50 border-t border-slate-100 px-6 py-4 flex justify-between items-center">
-                            <span class="text-sm font-mono text-slate-500 bg-white px-2 py-1 border border-slate-200 rounded shadow-sm">ID: #${brief.id}</span>
+                        <div class="bg-surface-base/30 border-t border-slate-800/30 px-6 py-3.5 flex justify-between items-center">
+                            <span class="text-[11px] font-mono text-slate-500 bg-surface-base/50 px-2.5 py-1 border border-slate-700/30 rounded-lg">ID: #${brief.id}</span>
                             ${actionButton}
                         </div>
                     </div>
@@ -472,18 +590,18 @@
                 const tab = document.getElementById('tab-' + id);
                 const nav = document.getElementById('nav-' + id);
                 tab.classList.add('hidden');
-                nav.classList.remove('bg-white/10', 'text-white', 'border', 'border-brand-orange');
-                nav.classList.add('text-slate-300');
+                nav.classList.remove('bg-white/5', 'text-white', 'active', 'border-accent-rose/30', 'bg-accent-rose/5');
+                nav.classList.add('text-slate-400');
             });
 
             document.getElementById('tab-' + tabId).classList.remove('hidden');
             const activeNav = document.getElementById('nav-' + tabId);
-            activeNav.classList.remove('text-slate-300');
+            activeNav.classList.remove('text-slate-400');
 
             if(tabId === 'lifecycle') {
-                activeNav.classList.add('border', 'border-brand-orange', 'text-white');
+                activeNav.classList.add('border-accent-rose/30', 'bg-accent-rose/5', 'text-white', 'active');
             } else {
-                activeNav.classList.add('bg-white/10', 'text-white');
+                activeNav.classList.add('bg-white/5', 'text-white', 'active');
             }
 
             document.getElementById('page-title').innerText = TAB_TITLES[tabId];
@@ -493,12 +611,12 @@
         // --- CREATOR & VALIDATION LOGIC ---
         function selectBrief(briefId) {
             currentActiveBrief = briefsData.find(b => b.id === briefId);
-            document.getElementById('nav-creator').classList.remove('pointer-events-none', 'opacity-50');
-            document.getElementById('nav-pipeline').classList.remove('pointer-events-none', 'opacity-50');
+            document.getElementById('nav-creator').classList.remove('pointer-events-none', 'opacity-40');
+            document.getElementById('nav-pipeline').classList.remove('pointer-events-none', 'opacity-40');
             document.getElementById('active-brief-id').innerText = '#' + currentActiveBrief.id;
             document.getElementById('active-brief-title').innerText = currentActiveBrief.title;
             document.getElementById('active-demo-tip').innerHTML = currentActiveBrief.demoTip;
-            document.getElementById('camp-text').value = ''; 
+            document.getElementById('camp-text').value = '';
             document.querySelector('input[name="asset_type"][value="marketing"]').checked = true;
             updateCreatorUI();
             switchTab('creator');
@@ -509,7 +627,7 @@
             currentAssetType = selected;
             const nameInput = document.getElementById('camp-name');
             const labelName = document.getElementById('label-camp-name');
-            
+
             if(selected === 'marketing') {
                 labelName.innerText = "שם הקמפיין (Marketing Asset)";
                 nameInput.value = `פוסט השקה - ${currentActiveBrief.title}`;
@@ -538,10 +656,10 @@
 
             const badge = document.getElementById('val-asset-badge');
             if(currentAssetType === 'marketing') {
-                badge.className = "bg-brand-accent text-white text-xs font-bold px-3 py-1 rounded border border-white/20";
+                badge.className = "bg-accent-primary/20 text-accent-primary text-[10px] font-semibold px-3 py-1 rounded-lg border border-accent-primary/20";
                 badge.innerHTML = '<i class="fa-solid fa-bullhorn ml-1"></i> שיווק (B2C)';
             } else {
-                badge.className = "bg-brand-purple text-white text-xs font-bold px-3 py-1 rounded border border-white/20";
+                badge.className = "bg-accent-purple/20 text-accent-purple text-[10px] font-semibold px-3 py-1 rounded-lg border border-accent-purple/20";
                 badge.innerHTML = '<i class="fa-solid fa-person-chalkboard ml-1"></i> הדרכה (B2B)';
             }
 
@@ -557,18 +675,16 @@
             const assetTypeName = currentAssetType === 'marketing' ? 'הקמפיין השיווקי' : 'פרוטוקול ההדרכה';
 
             if(violations.length > 0) {
-                valSystem.className = "rounded-lg p-5 mb-6 border bg-red-50 border-red-200 shadow-inner";
-                valSystem.innerHTML = `<div class="flex items-start gap-4"><div class="mt-1 text-red-600 text-2xl"><i class="fa-solid fa-hand"></i></div><div><h4 class="font-bold text-red-800 text-lg">חסם תפעולי הופעל (Hard Stop)</h4><p class="text-red-700 mt-1">המערכת זיהתה חריגה מגבולות הגזרה המוגדרים בבריף <span class="font-mono bg-red-100 px-1 rounded">#${currentActiveBrief.id}</span>.</p><p class="text-red-700 mt-1 font-bold">שימו לב: דין תוצר הדרכה כדין תוצר שיווקי מבחינת Compliance.</p><div class="mt-3 bg-white p-3 border border-red-100 rounded text-red-900 text-sm shadow-sm"><strong>מילים אסורות שאותרו בטקסט:</strong> <span class="font-bold">${violations.join(', ')}</span></div><p class="text-sm font-bold text-red-800 mt-3 flex items-center gap-2"><i class="fa-solid fa-circle-xmark"></i> ${assetTypeName} נחסם ולא יועבר לאישור ה-SME.</p></div></div>`;
-                actionBtns.innerHTML = `<button onclick="rejectToMarketing()" class="bg-red-600 text-white px-6 py-2 rounded-lg font-bold hover:bg-red-700 transition flex items-center gap-2 shadow-md"><i class="fa-solid fa-rotate-left"></i> דחה והחזר ליוצר לתיקון</button>`;
+                valSystem.className = "rounded-xl p-5 mb-6 bg-accent-rose/5 border border-accent-rose/20";
+                valSystem.innerHTML = `<div class="flex items-start gap-4"><div class="mt-1 text-accent-rose text-xl"><i class="fa-solid fa-hand"></i></div><div><h4 class="font-bold text-accent-rose text-base">חסם תפעולי הופעל (Hard Stop)</h4><p class="text-slate-300 mt-1 text-sm">המערכת זיהתה חריגה מגבולות הגזרה המוגדרים בבריף <span class="font-mono bg-surface-base/50 px-1.5 rounded border border-slate-700/40 text-accent-rose">#${currentActiveBrief.id}</span>.</p><p class="text-slate-300 mt-1 font-semibold text-sm">שימו לב: דין תוצר הדרכה כדין תוצר שיווקי מבחינת Compliance.</p><div class="mt-3 glass-light p-3 rounded-lg text-sm"><strong class="text-slate-200">מילים אסורות שאותרו בטקסט:</strong> <span class="font-semibold text-accent-rose">${violations.join(', ')}</span></div><p class="text-xs font-semibold text-accent-rose mt-3 flex items-center gap-2"><i class="fa-solid fa-circle-xmark"></i> ${assetTypeName} נחסם ולא יועבר לאישור ה-SME.</p></div></div>`;
+                actionBtns.innerHTML = `<button onclick="rejectToMarketing()" class="bg-accent-rose text-white px-5 py-2 rounded-xl font-semibold text-xs hover:bg-rose-600 transition flex items-center gap-2 shadow-lg shadow-rose-500/20"><i class="fa-solid fa-rotate-left"></i> דחה והחזר ליוצר לתיקון</button>`;
             } else {
-                valSystem.className = "rounded-lg p-5 mb-6 border bg-green-50 border-green-200 shadow-inner";
-                valSystem.innerHTML = `<div class="flex items-start gap-4"><div class="mt-1 text-green-600 text-2xl"><i class="fa-solid fa-check-double"></i></div><div><h4 class="font-bold text-green-800 text-lg">תיקוף אופרטיבי עבר בהצלחה</h4><p class="text-green-700 mt-1">${assetTypeName} תואם במלואו לטענות המאושרות בבריף ואינו מכיל חריגות בטיחותיות.</p><p class="text-sm font-bold text-green-800 mt-3 flex items-center gap-2"><i class="fa-solid fa-hourglass-half"></i> התוצר ממתין כעת לאישור סופי (עובדתי) של מומחה התוכן (SME).</p></div></div>`;
-                
-                // ADDED: SLA Timer explicit callout for SME handoff
+                valSystem.className = "rounded-xl p-5 mb-6 bg-accent-emerald/5 border border-accent-emerald/20";
+                valSystem.innerHTML = `<div class="flex items-start gap-4"><div class="mt-1 text-accent-emerald text-xl"><i class="fa-solid fa-check-double"></i></div><div><h4 class="font-bold text-accent-emerald text-base">תיקוף אופרטיבי עבר בהצלחה</h4><p class="text-slate-300 mt-1 text-sm">${assetTypeName} תואם במלואו לטענות המאושרות בבריף ואינו מכיל חריגות בטיחותיות.</p><p class="text-xs font-semibold text-accent-emerald mt-3 flex items-center gap-2"><i class="fa-solid fa-hourglass-half"></i> התוצר ממתין כעת לאישור סופי (עובדתי) של מומחה התוכן (SME).</p></div></div>`;
                 actionBtns.innerHTML = `
                     <div class="flex items-center gap-4 w-full justify-between">
-                        <span class="text-xs text-slate-400 font-mono"><i class="fa-solid fa-clock"></i> Ops Gate cleared in 12m. Handoff to SME...</span>
-                        <button onclick="simulateSMEApproval()" class="bg-brand-dark text-white px-6 py-2 rounded-lg font-bold hover:bg-blue-900 transition flex items-center gap-2 shadow-md"><i class="fa-solid fa-microscope"></i> אישור מומחה תוכן (SME)</button>
+                        <span class="text-[11px] text-slate-500 font-mono"><i class="fa-solid fa-clock"></i> Ops Gate cleared in 12m. Handoff to SME...</span>
+                        <button onclick="simulateSMEApproval()" class="btn-glow bg-gradient-to-l from-accent-primary to-cyan-600 text-white px-5 py-2 rounded-xl font-semibold text-xs flex items-center gap-2 shadow-lg shadow-cyan-500/20"><i class="fa-solid fa-microscope"></i> אישור מומחה תוכן (SME)</button>
                     </div>`;
             }
         }
@@ -581,16 +697,16 @@
         function simulateSMEApproval() {
             const prefix = currentAssetType === 'marketing' ? 'CMP' : 'TRN';
             const metaId = prefix + '-' + Math.floor(1000 + Math.random() * 9000) + '-A';
-            document.getElementById('validation-system').className = "rounded-lg p-5 mb-6 border bg-blue-50 border-blue-200 shadow-inner";
-            document.getElementById('validation-system').innerHTML = `<div class="flex items-start gap-4"><div class="mt-1 text-brand-accent text-3xl"><i class="fa-solid fa-link"></i></div><div class="w-full"><h4 class="font-bold text-brand-dark text-lg">תוצר אושר והופץ!</h4><div class="mt-4 bg-white p-4 border border-blue-100 rounded flex flex-col gap-3"><div class="flex justify-between items-center border-b border-slate-100 pb-2"><span class="text-slate-500 text-sm font-medium">מקור אמת (בריף):</span><span class="text-slate-800 font-mono text-sm font-bold">#${currentActiveBrief.id}</span></div><div class="flex justify-between items-center"><span class="text-blue-900 text-sm font-bold">מזהה Metadata נגזר:</span><span class="bg-brand-dark text-white font-mono text-sm font-bold px-3 py-1 rounded">${metaId}</span></div></div></div></div>`;
-            document.getElementById('action-buttons').innerHTML = `<button onclick="resetDemo()" class="bg-slate-200 text-slate-700 px-6 py-2 rounded-lg font-bold hover:bg-slate-300 transition"><i class="fa-solid fa-house"></i> חזור למאגר</button>`;
+            document.getElementById('validation-system').className = "rounded-xl p-5 mb-6 bg-accent-primary/5 border border-accent-primary/20";
+            document.getElementById('validation-system').innerHTML = `<div class="flex items-start gap-4"><div class="mt-1 text-accent-primary text-2xl"><i class="fa-solid fa-link"></i></div><div class="w-full"><h4 class="font-bold text-white text-base">תוצר אושר והופץ!</h4><div class="mt-4 glass-light p-4 rounded-xl flex flex-col gap-3"><div class="flex justify-between items-center border-b border-slate-700/30 pb-2"><span class="text-slate-400 text-sm">מקור אמת (בריף):</span><span class="text-slate-200 font-mono text-sm font-semibold">#${currentActiveBrief.id}</span></div><div class="flex justify-between items-center"><span class="text-accent-primary text-sm font-semibold">מזהה Metadata נגזר:</span><span class="bg-gradient-to-l from-accent-primary to-cyan-600 text-white font-mono text-sm font-semibold px-3 py-1 rounded-lg">${metaId}</span></div></div></div></div>`;
+            document.getElementById('action-buttons').innerHTML = `<button onclick="resetDemo()" class="bg-surface-overlay text-slate-300 px-5 py-2 rounded-xl font-semibold text-xs hover:bg-slate-700 transition border border-slate-700/50"><i class="fa-solid fa-house"></i> חזור למאגר</button>`;
             document.getElementById('pipeline-badge').classList.add('hidden');
         }
 
         function resetDemo() { switchTab('brief'); }
 
         function showOnboarding() {
-            const firstBtn = document.querySelector('#briefs-container .bg-brand-dark');
+            const firstBtn = document.querySelector('#briefs-container .btn-glow');
             if (!firstBtn) return;
             firstBtn.classList.add('onboard-tooltip');
             firstBtn.setAttribute('data-tooltip', 'התחל כאן');
@@ -604,8 +720,8 @@
             document.getElementById('lifecycle-alert').classList.add('hidden');
             document.getElementById('lifecycle-success').classList.remove('hidden');
             document.querySelector('#nav-lifecycle span.absolute').classList.add('hidden');
-            document.getElementById('nav-lifecycle').classList.remove('border', 'border-brand-orange');
-            
+            document.getElementById('nav-lifecycle').classList.remove('border-accent-rose/30', 'bg-accent-rose/5');
+
             const ahaBriefIndex = briefsData.findIndex(b => b.id === 'AHA-10-EXF');
             if(ahaBriefIndex !== -1) {
                 briefsData[ahaBriefIndex].status = 'Active v2.0';
