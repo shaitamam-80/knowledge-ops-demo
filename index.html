@@ -37,12 +37,42 @@
         }
         .sla-blink { animation: sla-pulse 1.5s infinite; }
         @keyframes sla-pulse { 0% { opacity: 1; } 50% { opacity: 0.6; } 100% { opacity: 1; } }
+
+        /* Mobile sidebar */
+        .sidebar-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.5); z-index: 25; }
+        .sidebar-overlay.active { display: block; }
+        @media (max-width: 768px) {
+            #sidebar { position: fixed; right: 0; top: 0; bottom: 0; transform: translateX(100%); transition: transform 0.3s ease; z-index: 30; }
+            #sidebar.open { transform: translateX(0); }
+        }
+
+        /* Onboarding tooltip */
+        .onboard-tooltip { position: relative; }
+        .onboard-tooltip::after {
+            content: attr(data-tooltip);
+            position: absolute; top: -44px; right: 50%; transform: translateX(50%);
+            background: #0f2c59; color: white; font-size: 12px; font-weight: 600;
+            padding: 6px 14px; border-radius: 8px; white-space: nowrap; z-index: 10;
+            animation: bounce-tooltip 1.5s infinite;
+        }
+        .onboard-tooltip::before {
+            content: ''; position: absolute; top: -8px; right: 50%; transform: translateX(50%);
+            border: 6px solid transparent; border-top-color: #0f2c59; z-index: 10;
+            animation: bounce-tooltip 1.5s infinite;
+        }
+        @keyframes bounce-tooltip {
+            0%, 100% { transform: translateX(50%) translateY(0); }
+            50% { transform: translateX(50%) translateY(-6px); }
+        }
     </style>
 </head>
 <body class="flex h-screen overflow-hidden text-slate-800">
 
+    <!-- Mobile overlay -->
+    <div id="sidebar-overlay" class="sidebar-overlay" onclick="toggleSidebar()"></div>
+
     <!-- Sidebar -->
-    <aside class="w-64 bg-brand-dark text-white flex flex-col shadow-xl z-20">
+    <aside id="sidebar" class="w-64 bg-brand-dark text-white flex flex-col shadow-xl z-20 shrink-0">
         <div class="p-6 border-b border-slate-700">
             <h1 class="text-2xl font-extrabold tracking-tight">Skin-Tech</h1>
             <div class="text-sm text-brand-accent mt-1 font-medium">SSOT Operations Hub</div>
@@ -75,8 +105,13 @@
     <!-- Main Content -->
     <main class="flex-1 flex flex-col bg-slate-50 relative overflow-y-auto">
         
-        <header class="bg-white px-8 py-5 shadow-sm border-b border-slate-200 flex justify-between items-center z-10 sticky top-0">
-            <h2 id="page-title" class="text-xl font-bold text-slate-800">מאגר האמת הארגוני (SSOT)</h2>
+        <header class="bg-white px-4 md:px-8 py-5 shadow-sm border-b border-slate-200 flex justify-between items-center z-10 sticky top-0">
+            <div class="flex items-center gap-3">
+                <button id="hamburger" onclick="toggleSidebar()" class="md:hidden text-slate-600 hover:text-brand-dark text-xl p-1">
+                    <i class="fa-solid fa-bars"></i>
+                </button>
+                <h2 id="page-title" class="text-lg md:text-xl font-bold text-slate-800">מאגר האמת הארגוני (SSOT)</h2>
+            </div>
             <div class="flex items-center gap-4">
                 <div class="text-xs font-mono bg-green-50 text-green-700 border border-green-200 px-3 py-1.5 rounded-full flex items-center gap-2">
                     <div class="w-2 h-2 rounded-full bg-green-500"></div> System Live
@@ -90,7 +125,7 @@
             </div>
         </header>
 
-        <div class="p-8 flex-1 max-w-6xl mx-auto w-full">
+        <div class="p-4 md:p-8 flex-1 max-w-6xl mx-auto w-full">
             
             <!-- TAB 1: KNOWLEDGE BRIEFS LIST -->
             <div id="tab-brief" class="fade-in">
@@ -118,7 +153,7 @@
                     <div class="space-y-6">
                         <div>
                             <label class="block text-sm font-bold text-slate-700 mb-2">יעד התוצר (פיצול נתיבים)</label>
-                            <div class="grid grid-cols-2 gap-4">
+                            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                                 <label class="cursor-pointer">
                                     <input type="radio" name="asset_type" value="marketing" class="peer sr-only" checked onchange="updateCreatorUI()">
                                     <div class="border border-slate-200 rounded-lg p-4 transition peer-checked:border-brand-dark peer-checked:bg-slate-50 peer-checked:ring-1 peer-checked:ring-brand-dark hover:bg-slate-50">
@@ -298,7 +333,15 @@
         let currentActiveBrief = null;
         let currentAssetType = 'marketing';
 
-        window.onload = () => { renderBriefs(); };
+        function toggleSidebar() {
+            document.getElementById('sidebar').classList.toggle('open');
+            document.getElementById('sidebar-overlay').classList.toggle('active');
+        }
+
+        window.onload = () => {
+            renderBriefs();
+            showOnboarding();
+        };
 
         function renderBriefs() {
             const container = document.getElementById('briefs-container');
@@ -328,7 +371,7 @@
                         </div>
                         <div class="p-6">
                             <p class="text-slate-600 mb-6 border-r-4 border-slate-300 pr-4 leading-relaxed"><strong>הקשר קליני:</strong> ${brief.context}</p>
-                            <div class="grid grid-cols-2 gap-6">
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                                 <div class="bg-green-50 rounded-lg p-5 border border-green-100">
                                     <h4 class="font-bold text-green-800 flex items-center gap-2 mb-3"><i class="fa-solid fa-check-circle"></i> טענות מאושרות (Claims)</h4>
                                     <ul class="space-y-2 text-sm text-green-900">${claimsHtml}</ul>
@@ -372,6 +415,9 @@
                 'lifecycle': 'ניהול מחזור חיי ידע (Lifecycle)'
             };
             document.getElementById('page-title').innerText = titles[tabId];
+            // Close sidebar on mobile
+            document.getElementById('sidebar').classList.remove('open');
+            document.getElementById('sidebar-overlay').classList.remove('active');
         }
 
         // --- CREATOR & VALIDATION LOGIC ---
@@ -466,6 +512,17 @@
         }
 
         function resetDemo() { switchTab('brief'); }
+
+        function showOnboarding() {
+            const firstBtn = document.querySelector('#briefs-container .bg-brand-dark');
+            if (!firstBtn) return;
+            firstBtn.classList.add('onboard-tooltip');
+            firstBtn.setAttribute('data-tooltip', 'התחל כאן');
+            firstBtn.addEventListener('click', () => {
+                firstBtn.classList.remove('onboard-tooltip');
+                firstBtn.removeAttribute('data-tooltip');
+            }, { once: true });
+        }
 
         function triggerCascade() {
             document.getElementById('lifecycle-alert').classList.add('hidden');
